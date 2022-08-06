@@ -1,1 +1,46 @@
+generator client {
+    provider = "prisma-client-js"
+}
 
+datasource db {
+    provider    = "mysql"
+    url         = env("SQL_URL")
+}
+
+model Target {
+    name                  String        @db.VarChar(64)
+    alias_id              String        @db.VarChar(16)
+    id                    Int           @id @default(autoincrement())
+    timestamp             DateTime      @default(now())
+    isSuspended           Boolean?       
+    localization_id       String        @default("en_us")
+}
+
+model Emote {
+    name                  String
+    id                    String        @id @unique
+    used_times            Int
+    provider_id           providers
+    is_deleted            Boolean?
+    is_global             Boolean?
+}
+
+model User {
+    name                  String        @db.VarChar(64)
+    alias_id              String        @id @db.VarChar(16)
+    auth_token            String        @db.VarChar(64)
+    internal_role         intRoles?
+
+}
+
+enum providers {
+    STV
+    BTTV
+    FFZ
+    TWITCH
+}
+
+enum intRoles {
+    SUSPENDED
+    SUPAUSER
+}
