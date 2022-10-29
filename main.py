@@ -8,6 +8,8 @@ from nitb.clients.twitch.TwitchIRCIdentity import TwitchIRCIdentity
 from nitb.utils.Configuration import getConfig
 from nitb.utils.ParseArguments import parseArguments
 from nitb.commands.CommandHandler import TMICommandHandler
+from nitb.handlers.TwitchIRCHandler import TwitchIRCHandler
+
 
 def run(args: any) -> None:
     # Bot configuration:
@@ -26,7 +28,12 @@ def run(args: any) -> None:
         cfg.get("CHAT", "CHANNELS").split(',')
     )
 
-    twitchClient.loop()
+    # Start to loop:
+    twitchClient.loop(TwitchIRCHandler(
+        client=twitchClient,
+        command=command,
+        config=cfg
+    ))
 
 if __name__ == "__main__":
     # Parse CLI arguments and run the bot:
