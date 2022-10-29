@@ -24,6 +24,7 @@ def getConfig(file_path: str) -> ConfigParser:
     # Section check:
     if cfg.has_section("IDENTITY") is False: cfg.add_section("IDENTITY"); shouldRewrite = True
     if cfg.has_section("CHAT") is False: cfg.add_section("CHAT"); shouldRewrite = True
+    if cfg.has_section("USERS") is False: cfg.add_section("USERS"); shouldRewrite = True
 
     # Identity options check:
     if cfg.has_option("IDENTITY", "USERNAME") is False: cfg.set("IDENTITY", "USERNAME", "BOT_USERNAME_HERE_PLEASE"); shouldRewrite = True
@@ -31,6 +32,10 @@ def getConfig(file_path: str) -> ConfigParser:
 
     # Chat options check:
     if cfg.has_option("CHAT", "CHANNELS") is False: cfg.set("CHAT", "CHANNELS", "someuser,someone"); shouldRewrite = True
+    if cfg.has_option("CHAT", "CHANNELS") is False: cfg.set("CHAT", "CHANNELS", "someuser,someone"); shouldRewrite = True
+
+    # User options check:
+    if cfg.has_option("USERS", "SUPERUSERIDS") is False: cfg.set("USERS", "SUPERUSERIDS", "191400264,242293211"); shouldRewrite = True
 
     # Overwrite the configuration file if some options are missing, or save the file if it doesn't exist:
     if exists(file_path) is False or shouldRewrite:
