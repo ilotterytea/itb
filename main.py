@@ -7,12 +7,17 @@ from nitb.clients.twitch.TwitchClient import TwitchClient
 from nitb.clients.twitch.TwitchIRCIdentity import TwitchIRCIdentity
 from nitb.utils.Configuration import getConfig
 from nitb.utils.ParseArguments import parseArguments
-
+from nitb.commands.CommandHandler import TMICommandHandler
 
 def run(args: any) -> None:
     # Bot configuration:
     cfg = getConfig(args.config)
 
+    # Command handler:
+    command = TMICommandHandler()
+    command.loadAllFromFolder("shared_modules")
+
+    # Creating a new instance of Twitch client:
     twitchClient = TwitchClient(
         TwitchIRCIdentity(
             cfg.get("IDENTITY", "USERNAME"),
