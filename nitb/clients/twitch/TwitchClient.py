@@ -75,7 +75,7 @@ class TwitchClient:
             logging.warn("Can't send a message! Reason: Twitch IRC Identity is None.")
             return
 
-        self._s.send(bytes("PRIVMSG #%s :%s\r\n" % channel, message))
+        self._s.send(bytes("PRIVMSG #{channel} :{message}\r\n".format(channel=channel, message=message), "UTF-8"))
         logging.info("PRIVMSG #{channel} :{msg}".format(channel=channel, msg=message))
 
     def close(self) -> None:
