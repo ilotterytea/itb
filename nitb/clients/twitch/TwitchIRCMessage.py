@@ -46,6 +46,9 @@ class TwitchIRCMessage:
     # Chat room's name.
     chatName: str
 
+    # Sent message.
+    message: str
+
     # Message's ID
     messageId: str
 
@@ -57,3 +60,6 @@ class TwitchIRCMessage:
     firstMessage: bool
 
     returningChatter: bool
+
+    # Type of IRC message: ROOMSTATE, PRIVMSG, etc. (Parameter for nerds)
+    ircType: str
