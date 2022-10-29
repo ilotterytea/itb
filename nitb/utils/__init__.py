@@ -6,3 +6,4 @@
 from nitb.utils.Logger import logging
 from nitb.utils.Configuration import getConfig
 from nitb.utils.ParseMessage import parseMessage
+from nitb.utils.ParseArguments import parseArguments
