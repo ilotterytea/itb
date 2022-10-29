@@ -33,13 +33,16 @@ def parseMessage(raw_message: str) -> TwitchIRCMessage:
         row: list[str | None] = option.split('=')
 
         # If key doesn't have any values, add the None value:
-        if len(row) < 2:
+        if row[1] == "":
             row[1] = None
 
         match row[0]:
             case "@badge-info": msg.badgeInfo = row[1]
             case "badges":
                 d: dict[str, bool] = {}
+
+                if row[1] is None:
+                    continue
 
                 # Transforming into a friendly format, e.g. {"moderator": True} instead of "moderator/1"
                 for badge in row[1].split(','):
