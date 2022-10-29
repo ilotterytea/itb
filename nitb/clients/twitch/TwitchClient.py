@@ -7,6 +7,8 @@ from socket import socket
 import traceback
 
 from nitb.clients.twitch.TwitchIRCIdentity import TwitchIRCIdentity
+from nitb.clients.twitch.TwitchIRCMessage import TwitchIRCMessage
+from nitb.clients.twitch.TwitchIRCMessageParser import parseMessage
 from nitb.utils.Logger import logging
 
 class TwitchClient:
@@ -24,6 +26,9 @@ class TwitchClient:
         # Twitch's IRC address:
         self._HOST = "irc.twitch.tv"
         self._PORT = 6667
+
+        # Latest IRC message:
+        self.LATEST_MESSAGE: TwitchIRCMessage | None = None
 
         logging.info("Initializing Twitch client...")
 
@@ -86,7 +91,7 @@ class TwitchClient:
         self._s.close()
         logging.info("The WebSocket connection was closed!")
 
-    def loop(self) -> None:
+    def loop(self, handler) -> None:
         """
         Starts processing all Twitch messages in a whileloop. At the same time, starts handling commands from the chat.
         Must be placed at the very end of your script if you want a working bot.
@@ -102,7 +107,7 @@ class TwitchClient:
                 self._s.close()
                 raise
             except:
-                print(traceback.format_exc())
+                logging.error(traceback.format_exc())
 
             temp = str.split(read_buf, "\r\n")
             read_buf = temp.pop()
@@ -113,7 +118,9 @@ class TwitchClient:
                     case "PING":
                         self._s.send(bytes("PONG %s\rp\n" % line[1], "UTF-8"))
                         logging.debug("Pong! Sorry, Twitch just sent PING to me.")
-                    # Call the command handler:
-                    case _:
-                        print(line)
-                        # TODO
+
+                match line.split(' ')[2]:
+                    case "PRIVMSG":
+                        # Call the command handler:
+                        self.LATEST_MESSAGE = parseMessage(line)
+                        handler.process(self.LATEST_MESSAGE)
