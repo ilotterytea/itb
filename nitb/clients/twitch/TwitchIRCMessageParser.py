@@ -5,6 +5,7 @@
 
 from nitb.clients.twitch.TwitchIRCMessage import TwitchIRCMessage
 
+
 def parseMessage(raw_message: str) -> TwitchIRCMessage:
     """
     Parse a raw message that was sent by Twitch.
@@ -18,12 +19,17 @@ def parseMessage(raw_message: str) -> TwitchIRCMessage:
         userName="", userId=0, userType="", isModerator=False,
         isSubscriber=False, isTurbo=False, chatId=0, chatName="",
         messageId="", tmiSentTs=0, emotes={}, flags="",
-        firstMessage=False, returningChatter=False
+        firstMessage=False, returningChatter=False,
+        message="", ircType=""
     )
 
-    tmp = raw_message.split(';')
+    tmp = raw_message.split(' ')
 
-    for option in tmp:
+    # Message parameters, e.g. "@badge-info=;badges=..."
+    msgParams = [p for p in tmp[0].split(';')]
+
+    # Setting the message parameters:
+    for option in msgParams:
         row: list[str | None] = option.split('=')
 
         # If key doesn't have any values, add the None value:
@@ -55,5 +61,17 @@ def parseMessage(raw_message: str) -> TwitchIRCMessage:
             case "turbo": msg.isTurbo = bool(int(row[1]))
             case "user-id": msg.userId = int(row[1])
             case "user-type": msg.userType = row[1]
+
+    # Setting a sender's username:
+    msg.userName = tmp[1][1:].split('!')[0]
+
+    # Setting the type of IRC message:
+    msg.ircType = tmp[2]
+
+    # Setting the room name without '#':
+    msg.chatName = tmp[3][1:]
+
+    # Full chat message:
+    msg.message = ' '.join(tmp[4:])[1:]
 
     return msg
