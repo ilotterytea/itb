@@ -6,9 +6,12 @@
 from nitb.clients.twitch.TwitchClient import TwitchClient
 from nitb.clients.twitch.TwitchIRCIdentity import TwitchIRCIdentity
 from nitb.utils.Configuration import getConfig
+from nitb.utils.ParseArguments import parseArguments
 
-def run(args: ...) -> None:
-    cfg = getConfig("config.ini")
+
+def run(args: any) -> None:
+    # Bot configuration:
+    cfg = getConfig(args.config)
 
     twitchClient = TwitchClient(
         TwitchIRCIdentity(
@@ -21,4 +24,5 @@ def run(args: ...) -> None:
     twitchClient.loop()
 
 if __name__ == "__main__":
-    run(None)
+    # Parse CLI arguments and run the bot:
+    run(parseArguments())
