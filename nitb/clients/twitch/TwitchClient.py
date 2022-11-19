@@ -21,7 +21,7 @@ class TwitchClient:
         """
 
         self._IDENTITY = identity
-        self._CHANNELS = channels
+        self.channels = channels
 
         # Twitch's IRC address:
         self._HOST = "irc.twitch.tv"
@@ -47,7 +47,7 @@ class TwitchClient:
 
         logging.info("Connected and joined the IRC server ({address}:{port})!".format(address=self._HOST,port=self._PORT))
 
-        for channel in self._CHANNELS:
+        for channel in self.channels:
             self.joinChannel(channel)
 
     def joinChannel(self, channel: str) -> None:
@@ -56,7 +56,11 @@ class TwitchClient:
 
         :param channel: Valid Twitch username.
         """
+        if channel in self.channels:
+            return
+        
         self._s.send(bytes("JOIN #%s\r\n" % channel, "UTF-8"))
+        self.channels.append(channel)
         logging.info("JOIN #{channel}".format(channel=channel))
 
     def partChannel(self, channel: str) -> None:
@@ -65,8 +69,11 @@ class TwitchClient:
 
         :param channel: Valid Twitch username.
         """
-
+        if channel not in self.channels:
+            return
+        
         self._s.send(bytes("PART #%s\r\n" % channel, "UTF-8"))
+        del self.channels[self.channels.index(channel)]
         logging.info("PART #{channel}".format(channel=channel))
 
     def sendMessage(self, channel: str, message: str) -> None:
