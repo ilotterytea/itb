@@ -50,6 +50,10 @@ class TwitchClient:
         for channel in self.channels:
             self.joinChannel(channel)
 
+    def getChannels(self) -> list[str]:
+        """Get the channels joined by the bot."""
+        return self.channels
+    
     def joinChannel(self, channel: str) -> None:
         """
         Join to the Twitch chat room.
